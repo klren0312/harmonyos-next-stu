@@ -1,5 +1,5 @@
-import { promptAction } from '@kit.ArkUI';
-
+import { promptAction } from '@kit.ArkUI'
+import router from '@ohos.router'
 interface IPerson {
   name: string,
   age: number,
@@ -23,6 +23,7 @@ struct Index {
   @State testText: string = `${this.clickSum}`;
   @State account: string = ''
   @State password: string = ''
+  @State dataLoading: boolean = true
   @State
   person: IPerson = {
     name: 'hm',
@@ -31,6 +32,7 @@ struct Index {
       throw new Error('Function not implemented.');
     }
   }
+  @State dataArr: string[] = ['test1', 'test2', 'test3']
 
   @Styles
   doCenter() {
@@ -59,6 +61,9 @@ struct Index {
               .aspectRatio(1)
               .fillColor('#848484')
           }
+          .onClick(() => {
+            router.back()
+          })
           .aspectRatio(1)
           .width(24)
           .height(24)
@@ -179,6 +184,7 @@ struct Index {
         Column() {
           Text('test1')
             .cusClick('#ff99ff', () => {
+              this.dataLoading = false
               promptAction.showDialog({
                 message: 'testtest',
                 title: '提示',
@@ -201,6 +207,19 @@ struct Index {
                 .backgroundColor(Color.Orange)
               }
             })
+        }
+        Column() {
+          if (this.dataLoading) {
+            LoadingProgress()
+          } else {
+            ForEach(
+              this.dataArr,
+              (item: string) => {
+                Text(item)
+              },
+              (item: string, index: number) => item + index
+            )
+          }
         }
       }
       .justifyContent(FlexAlign.Center)
